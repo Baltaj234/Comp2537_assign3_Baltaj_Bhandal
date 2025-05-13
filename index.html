@@ -13,6 +13,16 @@
 </head>
 
 <body>
+        <!-- Holds game information for the player, including clicks, pairs and time-->
+  <div id="game_status">
+        <p>Clicks: <span id="clicks">0</span></p>
+        <p>Pairs Left: <span id="pairs_left">3</span></p>
+        <p>Pairs Matched: <span id="pairs_matched">0</span></p>
+        <p>Total Pairs: <span id="total_pairs">3</span></p>
+        <p>Time: <span id="timer">0</span> seconds</p>
+        <div id="message" style="display:none;"></div>
+    </div>
+
   <div id="game_grid">
     <div class="card">
       <img id="img1" class="front_face" src="001.png" alt="">
