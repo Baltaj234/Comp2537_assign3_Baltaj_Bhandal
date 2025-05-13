@@ -10,6 +10,10 @@ body {
     margin-bottom: 20px;
 }
 
+#game_status > div {
+    margin-bottom: 10px;
+}
+
 #game_status p {
     display: inline;
     margin: 0 15px;
@@ -19,7 +23,7 @@ body {
     border: 2px tomato solid;
     width: 600px;
     height: 400px;
-    margin: auto;
+    margin: 20px auto; /* Added some margin above and below */
     display: flex;
     flex-wrap: wrap;
 }
@@ -48,4 +52,17 @@ img {
 
 .front_face {
     transform: rotateY(180deg);
+}
+
+.matched {
+    /* Optional: Style for matched cards */
+    opacity: 0.7;
+}
+
+#play_again_button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
 }

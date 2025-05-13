@@ -1,21 +1,30 @@
-
-
 function setup() {
     let firstCard = null;
     let secondCard = null;
     let preventClick = false;
     let clicks = 0;
     let pairsMatched = 0;
-    const totalPairs = $(".card").length / 2;
-    let timeLeft = 30; // Initial time in seconds
+    const totalPairs = $(".card").length / 2; // Always 3 pairs with 6 cards
+    let timeLeft;
     let timerInterval;
+    let difficulty = "easy"; // Default difficulty
 
-    // Initialize the status display
-    $("#total_pairs").text(totalPairs);
-    $("#pairs_left").text(totalPairs);
-    updateClicks();
-    updatePairsMatched();
-    startTimer();
+    function setDifficulty(level) {
+        difficulty = level;
+        switch (difficulty) {
+            case "easy":
+                timeLeft = 60; // Longer time for easy
+                break;
+            case "medium":
+                timeLeft = 45; // Medium time
+                break;
+            case "hard":
+                timeLeft = 30; // Shorter time for hard
+                break;
+        }
+        // Update the timer display immediately
+        $("#timer").text(timeLeft);
+    }
 
     function updateClicks() {
         $("#clicks").text(clicks);
@@ -31,6 +40,7 @@ function setup() {
     }
 
     function startTimer() {
+        clearInterval(timerInterval); // Clear any existing timer
         $("#timer").text(timeLeft);
         timerInterval = setInterval(() => {
             timeLeft--;
@@ -43,8 +53,9 @@ function setup() {
     }
 
     function endGame(win) {
-        preventClick = true; 
-        $(".card").off("mouseenter"); 
+        preventClick = true; // Disable further card flips
+        $(".card").off("mouseenter"); // Disable hover effect
+        $("#play_again_button").show(); // Show the play again button
         if (win) {
             displayMessage("You Win! Matched all pairs.");
         } else {
@@ -52,7 +63,33 @@ function setup() {
         }
     }
 
-    $(".card").on("mouseenter", function() {
+    function resetGame() {
+        clearInterval(timerInterval);
+        clicks = 0;
+        pairsMatched = 0;
+        firstCard = null;
+        secondCard = null;
+        preventClick = false;
+
+        // Reset the cards
+        $(".card").removeClass("flip matched").off("mouseenter").on("mouseenter", cardHoverHandler);
+        // You might need to re-randomize card images here for a truly new game
+
+        // Set difficulty based on the selected option
+        const selectedDifficulty = $("#difficulty").val();
+        setDifficulty(selectedDifficulty);
+
+        // Update the status display
+        $("#clicks").text(clicks);
+        $("#pairs_matched").text(pairsMatched);
+        $("#pairs_left").text(totalPairs - pairsMatched);
+        $("#timer").text(timeLeft); // Update time in case it changed
+        $("#message").slideUp(200);
+        $("#play_again_button").hide();
+        startTimer();
+    }
+
+    const cardHoverHandler = function() {
         if (preventClick || $(this).hasClass("flip")) {
             return;
         }
@@ -68,7 +105,7 @@ function setup() {
         } else if (!secondCard && currentCard !== firstCard) {
             secondCard = currentCard;
             preventClick = true;
-                // When two pairs are the same 
+
             if (firstCard.src === secondCard.src) {
                 setTimeout(() => {
                     $(`#${firstCard.id}`).parent().off("mouseenter").addClass("matched");
@@ -79,14 +116,12 @@ function setup() {
                     pairsMatched++;
                     updatePairsMatched();
                     console.log("Match!");
-                    // Winning condition when matched pairs equal total pairs
                     if (pairsMatched === totalPairs) {
                         clearInterval(timerInterval);
-                        endGame(true); 
+                        endGame(true); // Winning condition
                     }
                 }, 1000);
             } else {
-              // when two pairs are different
                 setTimeout(() => {
                     $(`#${firstCard.id}`).parent().toggleClass("flip");
                     $(`#${secondCard.id}`).parent().toggleClass("flip");
@@ -99,6 +134,16 @@ function setup() {
         } else if (currentCard === firstCard) {
             // User hovered over the first card again, do nothing
         }
+    };
+
+    // Initial setup based on default difficulty
+    setDifficulty(difficulty);
+    $(".card").on("mouseenter", cardHoverHandler);
+    $("#play_again_button").on("click", resetGame).hide(); // Hide initially
+
+    // Event listener for difficulty change
+    $("#difficulty").on("change", function() {
+        resetGame(); // Reset the game when difficulty changes
     });
 }
 

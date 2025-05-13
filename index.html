@@ -2,19 +2,25 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- import jQuery -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="index.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="index.js"></script>
 </head>
 
 <body>
-        <!-- Holds game information for the player, including clicks, pairs and time-->
-  <div id="game_status">
+    <div id="game_status">
+        <div>
+            <label for="difficulty">Difficulty:</label>
+            <select id="difficulty">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+        </div>
         <p>Clicks: <span id="clicks">0</span></p>
         <p>Pairs Left: <span id="pairs_left">3</span></p>
         <p>Pairs Matched: <span id="pairs_matched">0</span></p>
@@ -22,33 +28,33 @@
         <p>Time: <span id="timer">0</span> seconds</p>
         <div id="message" style="display:none;"></div>
     </div>
-
-  <div id="game_grid">
-    <div class="card">
-      <img id="img1" class="front_face" src="001.png" alt="">
-      <img class="back_face" src="back.webp" alt="">
+    <div id="game_grid">
+        <div class="card">
+            <img id="img1" class="front_face" src="001.png" alt="">
+            <img class="back_face" src="back.webp" alt="">
+        </div>
+        <div class="card">
+            <img id="img2" class="front_face" src="002.png" alt="">
+            <img class="back_face" src="back.webp" alt="">
+        </div>
+        <div class="card">
+            <img id="img3" class="front_face" src="003.png" alt="">
+            <img class="back_face" src="back.webp" alt="">
+        </div>
+        <div class="card">
+            <img id="img4" class="front_face" src="001.png" alt="">
+            <img class="back_face" src="back.webp" alt="">
+        </div>
+        <div class="card">
+            <img id="img5" class="front_face" src="002.png" alt="">
+            <img class="back_face" src="back.webp" alt="">
+        </div>
+        <div class="card">
+            <img id="img6" class="front_face" src="003.png" alt="">
+            <img class="back_face" src="back.webp" alt="">
+        </div>
     </div>
-    <div class="card">
-      <img id="img2" class="front_face" src="002.png" alt="">
-      <img class="back_face" src="back.webp" alt="">
-    </div>
-    <div class="card">
-      <img id="img3" class="front_face" src="003.png" alt="">
-      <img class="back_face" src="back.webp" alt="">
-    </div>
-    <div class="card">
-      <img id="img4" class="front_face" src="001.png" alt="">
-      <img class="back_face" src="back.webp" alt="">
-    </div>
-    <div class="card">
-      <img id="img5" class="front_face" src="002.png" alt="">
-      <img class="back_face" src="back.webp" alt="">
-    </div>
-    <div class="card">
-      <img id="img6" class="front_face" src="003.png" alt="">
-      <img class="back_face" src="back.webp" alt="">
-    </div>
-  </div>
+    <button id="play_again_button">Play Again</button>
 </body>
 
 </html>
