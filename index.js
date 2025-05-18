@@ -4,10 +4,11 @@ function setup() {
     let preventClick = false;
     let clicks = 0;
     let pairsMatched = 0;
-    const totalPairs = $(".card").length / 2; // Always 3 pairs with 6 cards
+    let totalPairs = 15; // Always 15 pairs with 30 cards now
     let timeLeft;
     let timerInterval;
     let difficulty = "easy"; // Default difficulty
+    let gameStarted = false; 
 
     function setDifficulty(level) {
         difficulty = level;
@@ -63,7 +64,66 @@ function setup() {
         }
     }
 
-    function resetGame() {
+    // Fetch 15 random Pokémon and return 30 shuffled card images
+    async function fetchPokemonCards() {
+        const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1500");
+        const data = await response.json();
+        const allPokemon = data.results;
+
+        // Pick 15 unique random Pokémon
+        const selectedPokemon = [];
+        while (selectedPokemon.length < 15) {
+            const randIndex = Math.floor(Math.random() * allPokemon.length);
+            const pokemon = allPokemon[randIndex];
+            if (!selectedPokemon.some(p => p.name === pokemon.name)) {
+                selectedPokemon.push(pokemon);
+            }
+        }
+
+        // Fetch their sprite images
+        const imageUrls = await Promise.all(selectedPokemon.map(async (pokemon) => {
+            const res = await fetch(pokemon.url);
+            const pokeData = await res.json();
+            return pokeData.sprites.front_default; // Use front image
+        }));
+
+        // Duplicate for pairs
+        const allImages = [...imageUrls, ...imageUrls];
+
+        // Shuffle
+        for (let i = allImages.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [allImages[i], allImages[j]] = [allImages[j], allImages[i]];
+        }
+
+        return allImages;
+    }
+
+    // Creates a card element's HTML
+    function createCardHTML(imageUrl, index) {
+        return `
+        <div class="card">
+            <img id="img${index}" class="front_face" src="${imageUrl}" alt="pokemon">
+            <img class="back_face" src="back.webp" alt="card back">
+        </div>
+        `;
+    }
+
+    // Build the grid with random Pokémon cards
+    async function initializeCards() {
+        const images = await fetchPokemonCards();
+        const gameGrid = $("#game_grid");
+        gameGrid.empty();
+
+        images.forEach((img, index) => {
+            gameGrid.append(createCardHTML(img, index));
+        });
+
+        // Re-bind event listeners for the new cards
+        $(".card").removeClass("flip matched").off("mouseenter").on("mouseenter", cardHoverHandler);
+    }
+
+    async function resetGame() {
         clearInterval(timerInterval);
         clicks = 0;
         pairsMatched = 0;
@@ -71,9 +131,7 @@ function setup() {
         secondCard = null;
         preventClick = false;
 
-        // Reset the cards
-        $(".card").removeClass("flip matched").off("mouseenter").on("mouseenter", cardHoverHandler);
-        // You might need to re-randomize card images here for a truly new game
+        await initializeCards(); // Dynamically build 30 randomized cards
 
         // Set difficulty based on the selected option
         const selectedDifficulty = $("#difficulty").val();
@@ -83,14 +141,17 @@ function setup() {
         $("#clicks").text(clicks);
         $("#pairs_matched").text(pairsMatched);
         $("#pairs_left").text(totalPairs - pairsMatched);
+        $("#total_pairs").text(totalPairs);
         $("#timer").text(timeLeft); // Update time in case it changed
         $("#message").slideUp(200);
         $("#play_again_button").hide();
-        startTimer();
+        if (gameStarted) { // Only start the timer if the game has started
+            startTimer();
+        }
     }
 
     const cardHoverHandler = function() {
-        if (preventClick || $(this).hasClass("flip")) {
+        if (!gameStarted || preventClick || $(this).hasClass("flip")) { // Check if game started
             return;
         }
 
@@ -138,12 +199,20 @@ function setup() {
 
     // Initial setup based on default difficulty
     setDifficulty(difficulty);
-    $(".card").on("mouseenter", cardHoverHandler);
     $("#play_again_button").on("click", resetGame).hide(); // Hide initially
 
     // Event listener for difficulty change
     $("#difficulty").on("change", function() {
         resetGame(); // Reset the game when difficulty changes
+    });
+
+    // Start Game button event listener
+    $("#start_button").on("click", async function() {
+        gameStarted = true;
+        await resetGame(); // Load cards when game starts
+        $(".card").on("mouseenter", cardHoverHandler); // Enable card interaction
+        startTimer(); // Start the timer
+        $(this).hide(); // Hide the start button
     });
 }
 
