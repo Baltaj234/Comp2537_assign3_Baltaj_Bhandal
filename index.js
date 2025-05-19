@@ -148,6 +148,10 @@ function setup() {
         if (gameStarted) { // Only start the timer if the game has started
             startTimer();
         }
+            // Resetting power ups when the user starts a new game
+        $("#power_reveal").prop("disabled", false);
+        $("#power_time").prop("disabled", false);
+
     }
 
     const cardHoverHandler = function() {
@@ -214,6 +218,35 @@ function setup() {
         startTimer(); // Start the timer
         $(this).hide(); // Hide the start button
     });
+
+    // Power up which reveals all cards for three seconds
+    $("#power_reveal").on("click", function () {
+    if (!gameStarted) return;
+
+    $(".card").addClass("flip"); // Flip all cards
+
+    setTimeout(() => {
+        $(".card").each(function () {
+            if (!$(this).hasClass("matched")) {
+                $(this).removeClass("flip");
+            }
+        });
+    }, 3000);
+
+    $(this).prop("disabled", true); 
+
+    // Power up that adds 15 seconds to the timer
+    $("#power_time").on("click", function () {
+    if (!gameStarted) return;
+
+    timeLeft += 15;
+    $("#timer").text(timeLeft);
+    displayMessage("+15 seconds added!");
+    $(this).prop("disabled", true); 
+});
+
+});
+
 }
 
 $(document).ready(setup);

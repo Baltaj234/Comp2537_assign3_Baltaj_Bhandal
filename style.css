@@ -89,9 +89,28 @@ button:hover {
     transform: rotateY(0deg);
 }
 
-/* Matched cards style (optional) */
+/* Matched cards style */
 .card.matched {
     box-shadow: 0 0 10px 2px limegreen;
     pointer-events: none;
     opacity: 0.7;
+}
+
+#powerups {
+    margin-top: 10px;
+}
+
+/* Styling for all the power ups */
+#powerups button {
+    margin: 5px;
+    padding: 6px 12px;
+    background-color: orange;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+#powerups button:hover {
+    background-color: darkorange;
 }
