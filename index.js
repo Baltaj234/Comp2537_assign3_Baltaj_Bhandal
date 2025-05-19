@@ -166,7 +166,7 @@ function setup() {
         } else if (!secondCard && currentCard !== firstCard) {
             secondCard = currentCard;
             preventClick = true;
-
+            // If the cards are a match
             if (firstCard.src === secondCard.src) {
                 setTimeout(() => {
                     $(`#${firstCard.id}`).parent().off("mouseenter").addClass("matched");
@@ -194,7 +194,7 @@ function setup() {
             }
         } else if (currentCard === firstCard) {
             // User hovered over the first card again, do nothing
-        }
+            console.log("Nothing happened");        }
     };
 
     // Initial setup based on default difficulty
